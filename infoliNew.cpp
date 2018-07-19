@@ -14,7 +14,7 @@ mod_prec IAppin0_newJH[MAX_N_SIZE];
 mod_prec Connectivity_Matrix0_newJH[CONN_MATRIX_MAX];
 
 
-void ComputeNetwork_new(bool ini,bool new_matrix,cellState * IniArray, mod_prec * iAppin, int N_Size, int Mux_Factor,mod_prec *  Connectivity_Matrix, int Conn_Matrix_Size, mod_prec * cellOut){
+void ComputeNetwork_new(bool ini,bool new_matrix,cellState IniArray[MAX_N_SIZE], mod_prec iAppin[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX], int Conn_Matrix_Size, mod_prec cellOut[MAX_N_SIZE]){
 	int j;
 	//returnState AxonOut;
 	mod_prec neighVdend0[MAX_N_SIZE];

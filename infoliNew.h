@@ -24,7 +24,7 @@
 #define TEN 0.1f
 #define TWELVE -1/12.0f
 #define NINE_HUNDRED 1/900.0f
-#define HUNDRED -0.01
+#define HUNDRED -0.01f
 
 /*** FUNCTION PROTOTYPES ***/
 
