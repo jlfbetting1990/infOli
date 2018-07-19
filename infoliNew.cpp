@@ -9,303 +9,69 @@
 #include "infoliNew.h"
 
 //cellState local_state[IO_NETWORK_DIM1*IO_NETWORK_DIM2][TIME_MUX_FACTOR];
-cellState local_state0_newJH[MAX_TIME_MUX];
-cellState local_state1_newJH[MAX_TIME_MUX];
-cellState local_state2_newJH[MAX_TIME_MUX];
-cellState local_state3_newJH[MAX_TIME_MUX];
-cellState local_state4_newJH[MAX_TIME_MUX];
+cellState local_state0_newJH[IO_NETWORK_SIZE];
 
 
-cellState new_state0_newJH[MAX_TIME_MUX];
-cellState new_state1_newJH[MAX_TIME_MUX];
-cellState new_state2_newJH[MAX_TIME_MUX];
-cellState new_state3_newJH[MAX_TIME_MUX];
-cellState new_state4_newJH[MAX_TIME_MUX];
+cellState new_state0_newJH[IO_NETWORK_SIZE];
 
 mod_prec IAppin0_newJH[MAX_TIME_MUX];
-mod_prec IAppin1_newJH[MAX_TIME_MUX];
-mod_prec IAppin2_newJH[MAX_TIME_MUX];
-mod_prec IAppin3_newJH[MAX_TIME_MUX];
-mod_prec IAppin4_newJH[MAX_TIME_MUX];
-mod_prec Connectivity_Matrix0_newJH[CONN_MATRIX_MAX/5];
-mod_prec Connectivity_Matrix1_newJH[CONN_MATRIX_MAX/5];
-mod_prec Connectivity_Matrix2_newJH[CONN_MATRIX_MAX/5];
-mod_prec Connectivity_Matrix3_newJH[CONN_MATRIX_MAX/5];
-mod_prec Connectivity_Matrix4_newJH[CONN_MATRIX_MAX/5];
+
+mod_prec Connectivity_Matrix0_newJH[CONN_MATRIX_MAX];
 
 
 void ComputeNetwork_new(bool ini,bool new_matrix,cellState IniArray[IO_NETWORK_SIZE], mod_prec iAppin[IO_NETWORK_SIZE] , int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_SIZE], int Conn_Matrix_Size, mod_prec cellOut[IO_NETWORK_SIZE]){
 
-	int i,j,k;
-//	for(j=0; j<IO_NETWORK_SIZE; ++j) {
-//		printf("cell %d: Ca2Plus: %.9f\n",j,IniArray[j].dend.Ca2Plus);
-//	}
-//	return;
+	int j;
 
 	//returnState AxonOut;
 	mod_prec neighVdend0[MAX_N_SIZE];
-	mod_prec neighVdend1[MAX_N_SIZE];
-	mod_prec neighVdend2[MAX_N_SIZE];
-	mod_prec neighVdend3[MAX_N_SIZE];
-	mod_prec neighVdend4[MAX_N_SIZE];
 
 	//Initialize cell clusters
-	if(ini){
-
-		ComputeNetwork_label0:	for(j=0;j<Mux_Factor;j++){
-
-			local_state0_newJH[j]= IniArray[j];
-			local_state1_newJH[j]= IniArray[j+Mux_Factor];
-			local_state2_newJH[j]= IniArray[j+(Mux_Factor*2)];
-			local_state3_newJH[j]= IniArray[j+(Mux_Factor*3)];
-			local_state4_newJH[j]= IniArray[j+(Mux_Factor*4)];
+	if(ini) {
+		for(j=0;j<IO_NETWORK_SIZE;++j) {
+			local_state0_newJH[j] = IniArray[j];
 		}
-
 	}
-
 
 	if(new_matrix){
 		int max_set = (IO_NETWORK_SIZE*IO_NETWORK_SIZE)/HW_CELLS; 
 		int its = max_set*IO_NETWORK_SIZE;
-		ComputeNetwork_connectivity: for (j=0;j<IO_NETWORK_SIZE*Mux_Factor;++j){
+		for (j=0;j<IO_NETWORK_SIZE*IO_NETWORK_SIZE;++j){
 			Connectivity_Matrix0_newJH[j] = Connectivity_Matrix[((j*IO_NETWORK_SIZE) % (IO_NETWORK_SIZE*IO_NETWORK_SIZE-1))];
-			Connectivity_Matrix1_newJH[j] = Connectivity_Matrix[((j*IO_NETWORK_SIZE) % (IO_NETWORK_SIZE*IO_NETWORK_SIZE-1))+Mux_Factor];
-			Connectivity_Matrix2_newJH[j] = Connectivity_Matrix[((j*IO_NETWORK_SIZE) % (IO_NETWORK_SIZE*IO_NETWORK_SIZE-1))+2*Mux_Factor];
-			Connectivity_Matrix3_newJH[j] = Connectivity_Matrix[((j*IO_NETWORK_SIZE) % (IO_NETWORK_SIZE*IO_NETWORK_SIZE-1))+3*Mux_Factor];
-			Connectivity_Matrix4_newJH[j] = Connectivity_Matrix[((j*IO_NETWORK_SIZE) % (IO_NETWORK_SIZE*IO_NETWORK_SIZE-1))+4*Mux_Factor];
 		}
-//		printf("Matrix 0\n");
-//		for (j=0;j<IO_NETWORK_SIZE*Mux_Factor;++j) {
-//			printf("%.2f ",Connectivity_Matrix0_newJH[j]);
-//		}
-//		printf("\n");
-//		
-//		printf("Matrix 1\n");
-//		for (j=0;j<IO_NETWORK_SIZE*Mux_Factor;++j) {
-//			printf("%.2f ",Connectivity_Matrix1_newJH[j]);
-//		}
-//		printf("\n");
-//
-//		printf("Matrix 2\n");
-//		for (j=0;j<IO_NETWORK_SIZE*Mux_Factor;++j) {
-//			printf("%.2f ",Connectivity_Matrix2_newJH[j]);
-//		}
-//		printf("\n");
-//
-//		printf("Matrix 3\n");
-//		for (j=0;j<IO_NETWORK_SIZE*Mux_Factor;++j) {
-//			printf("%.2f ",Connectivity_Matrix3_newJH[j]);
-//		}
-//		printf("\n");
-//
-//		printf("Matrix 4\n");
-//		for (j=0;j<IO_NETWORK_SIZE*Mux_Factor;++j) {
-//			printf("%.2f ",Connectivity_Matrix4_newJH[j]);
-//		}
-//		printf("\n");
-//		return;
 	}
 	//Save invoked inputs on Block RAM and pick up the neighboring inputs for each cluster.
-	ComputeNetwork_label1:	for(j=0;j<Mux_Factor;j++){
 
-
-		IAppin0_newJH[j]=iAppin[j+(Mux_Factor*0)];
-		IAppin1_newJH[j]=iAppin[j+(Mux_Factor*1)];
-		IAppin2_newJH[j]=iAppin[j+(Mux_Factor*2)];
-		IAppin3_newJH[j]=iAppin[j+(Mux_Factor*3)];
-		IAppin4_newJH[j]=iAppin[j+(Mux_Factor*4)];
-	}
-
-	//Neighboring inputs preparation
-	k=0;
-	ComputeNetwork_label2:	for(i=0;i<Mux_Factor;i++){
-
-		neighVdend0[i] = local_state0_newJH[i].dend.V_dend ;
-		neighVdend0[i+Mux_Factor] = local_state1_newJH[i].dend.V_dend ;
-		neighVdend0[i+2*Mux_Factor] = local_state2_newJH[i].dend.V_dend ;
-		neighVdend0[i+3*Mux_Factor] = local_state3_newJH[i].dend.V_dend ;
-		neighVdend0[i+4*Mux_Factor] = local_state4_newJH[i].dend.V_dend ;
-	    	
-		k=k+HW_CELLS;
-	}
-	k=0;
-	ComputeNetwork_label3:	for(i=0;i<Mux_Factor;i++){
-
-		neighVdend1[i] = local_state0_newJH[i].dend.V_dend ;
-		neighVdend1[i+Mux_Factor] = local_state1_newJH[i].dend.V_dend ;
-		neighVdend1[i+2*Mux_Factor] = local_state2_newJH[i].dend.V_dend ;
-		neighVdend1[i+3*Mux_Factor] = local_state3_newJH[i].dend.V_dend ;
-		neighVdend1[i+4*Mux_Factor] = local_state4_newJH[i].dend.V_dend ;
-		
-		k=k+HW_CELLS;
-	}
-	k=0;
-	ComputeNetwork_label4:	for(i=0;i<Mux_Factor;i++){
-
-		neighVdend2[i] = local_state0_newJH[i].dend.V_dend ;
-		neighVdend2[i+Mux_Factor] = local_state1_newJH[i].dend.V_dend ;
-		neighVdend2[i+2*Mux_Factor] = local_state2_newJH[i].dend.V_dend ;
-		neighVdend2[i+3*Mux_Factor] = local_state3_newJH[i].dend.V_dend ;
-		neighVdend2[i+4*Mux_Factor] = local_state4_newJH[i].dend.V_dend ;
-
-		k=k+HW_CELLS;
-	}
-	k=0;
-	ComputeNetwork_label5:	for(i=0;i<Mux_Factor;i++){
-
-		neighVdend3[i] = local_state0_newJH[i].dend.V_dend ;
-		neighVdend3[i+Mux_Factor] = local_state1_newJH[i].dend.V_dend ;
-		neighVdend3[i+2*Mux_Factor] = local_state2_newJH[i].dend.V_dend ;
-		neighVdend3[i+3*Mux_Factor] = local_state3_newJH[i].dend.V_dend ;
-		neighVdend3[i+4*Mux_Factor] = local_state4_newJH[i].dend.V_dend ;
-
-		k=k+HW_CELLS;
-	}
-
-	k=0;
-	ComputeNetwork_label6:	for(i=0;i<Mux_Factor;i++){
-
-		neighVdend4[i] = local_state0_newJH[i].dend.V_dend ;
-		neighVdend4[i+Mux_Factor] = local_state1_newJH[i].dend.V_dend ;
-		neighVdend4[i+2*Mux_Factor] = local_state2_newJH[i].dend.V_dend ;
-		neighVdend4[i+3*Mux_Factor] = local_state3_newJH[i].dend.V_dend ;
-		neighVdend4[i+4*Mux_Factor] = local_state4_newJH[i].dend.V_dend ;
-
-		k=k+HW_CELLS;
+	for(j=0;j<IO_NETWORK_SIZE;++j){
+		neighVdend0[j] = local_state0_newJH[j].dend.V_dend;
+		IAppin0_newJH[j] = iAppin[j];
 	}
 
 	ComputeOneCellTimeMux0_newJH(0,IAppin0_newJH,neighVdend0,N_Size,Mux_Factor,Connectivity_Matrix0_newJH);
-	ComputeOneCellTimeMux1_newJH(1,IAppin1_newJH,neighVdend1,N_Size,Mux_Factor,Connectivity_Matrix1_newJH);
-	ComputeOneCellTimeMux2_newJH(2,IAppin2_newJH,neighVdend2,N_Size,Mux_Factor,Connectivity_Matrix2_newJH);
-	ComputeOneCellTimeMux3_newJH(3,IAppin3_newJH,neighVdend3,N_Size,Mux_Factor,Connectivity_Matrix3_newJH);
-	ComputeOneCellTimeMux4_newJH(4,IAppin4_newJH,neighVdend4,N_Size,Mux_Factor,Connectivity_Matrix4_newJH);
 
-
-	ComputeNetwork_label8:	for(j=0;j<Mux_Factor;j++){
+	for(j=0;j<IO_NETWORK_SIZE;++j){
 		local_state0_newJH[j]=new_state0_newJH[j];
-		local_state1_newJH[j]=new_state1_newJH[j];
-		local_state2_newJH[j]=new_state2_newJH[j];
-		local_state3_newJH[j]=new_state3_newJH[j];
-		local_state4_newJH[j]=new_state4_newJH[j];
 	}
 	//Create system output(all cell axon currents)
-	ComputeNetwork_label9:	for(j=0;j<Mux_Factor;j++){
-
-		cellOut[j+(TIME_MUX_FACTOR*0)] = local_state0_newJH[j].axon.V_axon;
-		cellOut[j+(TIME_MUX_FACTOR*1)] = local_state1_newJH[j].axon.V_axon;
-		cellOut[j+(TIME_MUX_FACTOR*2)] = local_state2_newJH[j].axon.V_axon;
-		cellOut[j+(TIME_MUX_FACTOR*3)] = local_state3_newJH[j].axon.V_axon;
-		cellOut[j+(TIME_MUX_FACTOR*4)] = local_state4_newJH[j].axon.V_axon;
+	for(j=0;j<IO_NETWORK_SIZE;++j){
+		cellOut[j] = local_state0_newJH[j].axon.V_axon;
 	}
-
-
-
-	//return cellOut;
-
 }
 
-void ComputeOneCellTimeMux0_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
+void ComputeOneCellTimeMux0_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE]){
 	int j,i;
 	
 	mod_prec * cm_p = Connectivity_Matrix;
 
 	// call cell execution
-	ComputeOneCellTimeMux0_newJH_label10:for(j=0;j<Mux_Factor;j++){
-
-
-//		printf("\nCalculating cell %d#%d:\n",cluster, j);
+	for(j=0; j<IO_NETWORK_SIZE; ++j){
 		ComputeOneCell0_newJH(cluster,j,iAppin[j],neighVdend,N_Size,cm_p);
 		cm_p += IO_NETWORK_SIZE;
-		}
-
-
-
-}
-
-void ComputeOneCellTimeMux1_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
-	int j,i;
-
-	mod_prec * cm_p = Connectivity_Matrix;
-
-
-	// call cell execution
-	ComputeOneCellTimeMux1_newJH_label11:for(j=0;j<Mux_Factor;j++){
-
-//		printf("\nCalculating cell %d#%d:\n",cluster, j);
-		ComputeOneCell1_newJH(cluster,j,iAppin[j],neighVdend,N_Size,cm_p);
-		cm_p += IO_NETWORK_SIZE;
-
-		}
-
-
-
-}
-
-
-void ComputeOneCellTimeMux2_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
-	int j,i;
-
-	mod_prec * cm_p = Connectivity_Matrix;
-
-
-	// call cell execution
-	ComputeOneCellTimeMux2_newJH_label12:for(j=0;j<Mux_Factor;j++){
-//		printf("\nCalculating cell %d#%d:\n",cluster, j);
-		ComputeOneCell2_newJH(cluster,j,iAppin[j],neighVdend,N_Size,cm_p);
-		cm_p += IO_NETWORK_SIZE;
-
-		}
-
-
-
-}
-
-void ComputeOneCellTimeMux3_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
-	int j,i;
-
-
-	mod_prec * cm_p = Connectivity_Matrix;
-
-
-	// call cell execution
-	ComputeOneCellTimeMux3_newJH_label13:for(j=0;j<Mux_Factor;j++){
-
-
-
-//		printf("\nCalculating cell %d#%d:\n",cluster, j);
-		ComputeOneCell3_newJH(cluster,j,iAppin[j],neighVdend,N_Size,cm_p);
-		cm_p += IO_NETWORK_SIZE;
-
-		}
-
-
-
-}
-
-void ComputeOneCellTimeMux4_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
-	int j,i;
-
-
-	mod_prec * cm_p = Connectivity_Matrix;
-
-
-	// call cell execution
-	ComputeOneCellTimeMux4_newJH_label14:for(j=0;j<Mux_Factor;j++){
-
-
-
-//		printf("\nCalculating cell %d#%d:\n",cluster, j);
-		ComputeOneCell4_newJH(cluster,j,iAppin[j],neighVdend,N_Size,cm_p);
-		cm_p += IO_NETWORK_SIZE;
-
-		}
-
-
-
+	}
 }
 
 //Top Inferior Olive Cell compute function including the 3 computational compartments.
-void ComputeOneCell0_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
+void ComputeOneCell0_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE]){
 
 	cellState prevCellState;
 	prevCellState = local_state0_newJH[j];
@@ -314,67 +80,10 @@ void ComputeOneCell0_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_
 	new_state0_newJH[j].dend = CompDend_newJH(prevCellState.dend, prevCellState.soma.V_soma , iAppin, neighVdend,N_Size,Connectivity_Matrix,j);
 	new_state0_newJH[j].soma = CompSoma_newJH(prevCellState.soma,prevCellState.dend.V_dend, prevCellState.axon.V_axon);
 	new_state0_newJH[j].axon = CompAxon_newJH(prevCellState.axon ,prevCellState.soma.V_soma);
-
-
-
 }
 
-void ComputeOneCell1_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
 
-	cellState prevCellState;
-	prevCellState = local_state1_newJH[j];
-
-    //The three compartments can be computed concurrently but only across a single sim step
-	new_state1_newJH[j].dend = CompDend_newJH(prevCellState.dend, prevCellState.soma.V_soma , iAppin, neighVdend,N_Size,Connectivity_Matrix,j);
-	new_state1_newJH[j].soma = CompSoma_newJH(prevCellState.soma,prevCellState.dend.V_dend, prevCellState.axon.V_axon);
-	new_state1_newJH[j].axon = CompAxon_newJH(prevCellState.axon ,prevCellState.soma.V_soma);
-
-
-
-}
-
-void ComputeOneCell2_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
-
-	cellState prevCellState;
-	prevCellState = local_state2_newJH[j];
-
-    //The three compartments can be computed concurrently but only across a single sim step
-	new_state2_newJH[j].dend = CompDend_newJH(prevCellState.dend, prevCellState.soma.V_soma , iAppin, neighVdend,N_Size,Connectivity_Matrix,j);
-	new_state2_newJH[j].soma = CompSoma_newJH(prevCellState.soma,prevCellState.dend.V_dend, prevCellState.axon.V_axon);
-	new_state2_newJH[j].axon = CompAxon_newJH(prevCellState.axon ,prevCellState.soma.V_soma);
-
-
-
-}
-
-void ComputeOneCell3_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
-
-	cellState prevCellState;
-	prevCellState = local_state3_newJH[j];
-
-    //The three compartments can be computed concurrently but only across a single sim step
-	new_state3_newJH[j].dend = CompDend_newJH(prevCellState.dend, prevCellState.soma.V_soma , iAppin, neighVdend,N_Size,Connectivity_Matrix,j);
-	new_state3_newJH[j].soma = CompSoma_newJH(prevCellState.soma,prevCellState.dend.V_dend, prevCellState.axon.V_axon);
-	new_state3_newJH[j].axon = CompAxon_newJH(prevCellState.axon ,prevCellState.soma.V_soma);
-
-
-
-}
-void ComputeOneCell4_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5]){
-
-	cellState prevCellState;
-	prevCellState = local_state4_newJH[j];
-
-    //The three compartments can be computed concurrently but only across a single sim step
-	new_state4_newJH[j].dend = CompDend_newJH(prevCellState.dend, prevCellState.soma.V_soma , iAppin, neighVdend,N_Size,Connectivity_Matrix,j);
-	new_state4_newJH[j].soma = CompSoma_newJH(prevCellState.soma,prevCellState.dend.V_dend, prevCellState.axon.V_axon);
-	new_state4_newJH[j].axon = CompAxon_newJH(prevCellState.axon ,prevCellState.soma.V_soma);
-
-
-
-}
-
-Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5],int j){
+Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE],int j){
 
 	struct Dend d_output;
     struct channelParams chPrms;
@@ -544,7 +253,7 @@ dendCurrVoltPrms DendCurrVolt_newJH(struct dendCurrVoltPrms chComps){
     chComps.newI_CaH = I_CaH;//This is a state value read in DendCal_newJH
     return chComps;
 }
-mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend, int N_Size ,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX/5],int j){
+mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend, int N_Size ,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE],int j){
 
     int i,Bit_Indicator,pos, Integer_Indicator, Array_Fragment;
     mod_prec f, V, I_c, V_acc, F_acc;

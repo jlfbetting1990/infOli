@@ -146,7 +146,7 @@ int main(int argc, char *argv[]){
             ComputeNetwork_new(ini,new_matrix, IniArray, iAppArray,IO_NETWORK_SIZE,TIME_MUX_FACTOR,Connectivity_Matrix,CONN_MATRIX_SIZE,cellOut_2.axonOut);
             for(j=0;j<IO_NETWORK_SIZE;j++){
 					result_1 = cellOut_1.axonOut[j];
-					result_2 = cellOut_1.axonOut[j];
+					result_2 = cellOut_2.axonOut[j];
 					percDifference = abs((result_2-result_1)/result_1)*100;
 					sprintf(temp,"%.16f <==> %.16f (%.16f%%)\n", cellOut_1.axonOut[j], cellOut_2.axonOut[j], percDifference);
                     fputs(temp, pOutFile);
