@@ -22,7 +22,6 @@ mod_prec Connectivity_Matrix0_newJH[CONN_MATRIX_MAX];
 void ComputeNetwork_new(bool ini,bool new_matrix,cellState IniArray[IO_NETWORK_SIZE], mod_prec iAppin[IO_NETWORK_SIZE] , int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_SIZE], int Conn_Matrix_Size, mod_prec cellOut[IO_NETWORK_SIZE]){
 
 	int j;
-
 	//returnState AxonOut;
 	mod_prec neighVdend0[MAX_N_SIZE];
 
@@ -129,16 +128,12 @@ mod_prec DendHCurr_newJH(struct channelParams chPrms , mod_prec prevV_dend){
 
     mod_prec q_inf, tau_q, dq_dt, q_local;
 
-    //opt for division by constant
-    mod_prec const div_four = 0.25;
-
-
     //Get inputs
    // mod_prec prevV_dend = chPrms.v;
     mod_prec prevHcurrent_q = chPrms.prevComp1;
 
     // Update dendritic H current component
-    q_inf = 1 /(1 + expf((prevV_dend + 80) * div_four));
+    q_inf = 1 /(1 + expf((prevV_dend + 80) * DIV_FOUR));
     tau_q = 1 /(expf(-0.086 * prevV_dend - 14.6) + expf(0.070 * prevV_dend - 1.87));
     dq_dt = (q_inf - prevHcurrent_q) / tau_q;
     q_local = DELTA * dq_dt + prevHcurrent_q;
@@ -151,16 +146,13 @@ mod_prec DendCaCurr_newJH(struct channelParams chPrms, mod_prec prevV_dend){
 
     mod_prec alpha_r, beta_r, r_inf, tau_r, dr_dt, r_local;
 
-    //opt for division by constant
-    mod_prec const div_five = 0.2;
-    mod_prec const div_thirteen = 1/13.9;
     //Get inputs
     //mod_prec prevV_dend = chPrms.v;
     mod_prec prevCalcium_r = chPrms.prevComp1;
 
     // Update dendritic high-threshold Ca current component
-    alpha_r = 1.7 / (1 + expf( -(prevV_dend - 5) *div_thirteen));
-    beta_r = 0.02 * (prevV_dend + 8.5) / (expf((prevV_dend + 8.5) * div_five) - 1);
+    alpha_r = 1.7 / (1 + expf( -(prevV_dend - 5) *DIV_THIRTEEN));
+    beta_r = 0.02 * (prevV_dend + 8.5) / (expf((prevV_dend + 8.5) * DIV_FIVE) - 1);
     r_inf = alpha_r / (alpha_r + beta_r);
     tau_r = 5 / (alpha_r + beta_r);
     dr_dt = (r_inf - prevCalcium_r) / tau_r;
@@ -367,18 +359,10 @@ channelParams SomaCalcium_newJH(struct channelParams chPrms){
     mod_prec prevCalcium_k = chPrms.prevComp1;
     mod_prec prevCalcium_l = chPrms.prevComp2;
 
-
-    //opt for division with constant
-    mod_prec const four = 1/4.2;
-    mod_prec const eight = 1/8.5; //no change in area by synthesizer on V7
-    mod_prec const thirty = 1/30.0;  //no change in area by synthesizer on V7
-    mod_prec const seven = 1/7.3; //no change in area by synthesizer on V7
-
-
-    k_inf = (1 / (1 + expf(-1 * (prevV_soma + 61)  * four)));
-    l_inf = (1 / (1 + expf((     prevV_soma + 85.5) * eight)));
+    k_inf = (1 / (1 + expf(-1 * (prevV_soma + 61)  * FOUR)));
+    l_inf = (1 / (1 + expf((     prevV_soma + 85.5) * EIGHT)));
     tau_k = 1;
-    tau_l = ((20 * expf((prevV_soma + 160) * thirty) / (1 + expf((prevV_soma + 84) * seven ))) +35);
+    tau_l = ((20 * expf((prevV_soma + 160) * THIRTY) / (1 + expf((prevV_soma + 84) * SEVEN ))) +35);
     dk_dt = (k_inf - prevCalcium_k) / tau_k;
     dl_dt = (l_inf - prevCalcium_l) / tau_l;
     k_local = DELTA * dk_dt + prevCalcium_k;
@@ -398,17 +382,12 @@ channelParams SomaSodium_newJH(struct channelParams chPrms){
     //mod_prec prevSodium_m = *chPrms->prevComp1;
     mod_prec prevSodium_h = chPrms.prevComp2;
 
-    //opt for division by constant
-    mod_prec const five_five = 1/5.5; //no change in area by synthesizer on V7
-    mod_prec const five_eight = -1/5.8; //no change in area by synthesizer on V7
-    mod_prec const thirty_three = 1/33.0;  //no change in area by synthesizer on V7
-
     // RAT THALAMOCORTICAL SODIUM:
 
 
-    m_inf   = 1 / (1 + (expf((-30 - prevV_soma)* five_five)));
-    h_inf   = 1 / (1 + (expf((-70 - prevV_soma)* five_eight)));
-    tau_h   =       3 * expf((-40 - prevV_soma)* thirty_three);
+    m_inf   = 1 / (1 + (expf((-30 - prevV_soma)* FIVE_FIVE)));
+    h_inf   = 1 / (1 + (expf((-70 - prevV_soma)* FIVE_EIGHT)));
+    tau_h   =       3 * expf((-40 - prevV_soma)* THIRTY_THREE);
     dh_dt   = (h_inf - prevSodium_h)/tau_h;
     m_local       = m_inf;
     h_local       = prevSodium_h + DELTA * dh_dt;
@@ -428,15 +407,11 @@ channelParams SomaPotassium_newJH(struct channelParams chPrms){
     mod_prec prevPotassium_p = chPrms.prevComp2;
 
     //opt for division by constant
-    mod_prec const ten = 0.1; //precision error if 1/10 is used
-    mod_prec const twelve = -1/12.0; //no change in area by synthesizer on V7
-    mod_prec const nine_hundred = 1/900.0;  //no change in area by synthesizer on V7
-
 
     // NEOCORTICAL
-    n_inf = 1 / (1 + expf( ( -3 - prevV_soma) * ten));
-    p_inf = 1 / (1 + expf( (-51 - prevV_soma) * twelve));
-    tau_n =   5 + (  47 * expf( -(-50 - prevV_soma) * nine_hundred));
+    n_inf = 1 / (1 + expf( ( -3 - prevV_soma) * TEN));
+    p_inf = 1 / (1 + expf( (-51 - prevV_soma) * TWELVE));
+    tau_n =   5 + (  47 * expf( -(-50 - prevV_soma) * NINE_HUNDRED));
     tau_p = tau_n;
     dn_dt = (n_inf - prevPotassium_n) / tau_n;
     dp_dt = (p_inf - prevPotassium_p) / tau_p;
@@ -456,11 +431,8 @@ mod_prec SomaPotassiumX_newJH(struct channelParams chPrms){
     mod_prec prevV_soma = chPrms.v;
     mod_prec prevPotassium_x_s = chPrms.prevComp1;
 
-    //opt for division by constant
-     mod_prec const ten = 0.1; //no change in area by synthesizer on V7
-
     // Voltage-dependent (fast) potassium
-    alpha_x_s = 0.13 * (prevV_soma + 25) / (1 - expf(-(prevV_soma + 25) * ten));
+    alpha_x_s = 0.13 * (prevV_soma + 25) / (1 - expf(-(prevV_soma + 25) * TEN));
     beta_x_s  = 1.69 * expf(-0.0125 * (prevV_soma + 35));
     x_inf_s   = alpha_x_s / (alpha_x_s + beta_x_s);
     tau_x_s   =         1 / (alpha_x_s + beta_x_s);
@@ -595,10 +567,9 @@ mod_prec AxonPotassium_newJH(struct channelParams chPrms){
     mod_prec prevPotassium_x_a = chPrms.prevComp1;
 
     //opt for division by constant
-    mod_prec const ten = 0.1; //no change in area by synthesizer on V7
 
     // D'ANGELO 2001 -- Voltage-dependent potassium
-    alpha_x_a = 0.13 * (prevV_axon + 25) / (1 - expf(-(prevV_axon + 25) * ten));
+    alpha_x_a = 0.13 * (prevV_axon + 25) / (1 - expf(-(prevV_axon + 25) * TEN));
     beta_x_a  = 1.69 * expf(-0.0125 * (prevV_axon + 35));
     x_inf_a   = alpha_x_a / (alpha_x_a + beta_x_a);
     tau_x_a   =         1 / (alpha_x_a + beta_x_a);

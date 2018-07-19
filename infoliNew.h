@@ -9,6 +9,23 @@
 #include <infoli.h>
 #endif /* MAIN_H_ */
 
+/*** CONSTANTS ***/
+
+#define DIV_FOUR 0.25f
+#define DIV_FIVE 0.2f
+#define DIV_THIRTEEN 1/13.9f
+#define FOUR 1/4.2f
+#define EIGHT 1/8.5f
+#define THIRTY 1/30.00f
+#define SEVEN 1/7.3f
+#define FIVE_FIVE 1/5.5f
+#define FIVE_EIGHT -1/5.8f
+#define THIRTY_THREE 1/33.0f
+#define TEN 0.1f
+#define TWELVE -1/12.0f
+#define NINE_HUNDRED 1/900.0f
+
+
 /*** FUNCTION PROTOTYPES ***/
 //void ComputeNetwork_new(bool,bool ,cellState* , mod_prec*, int , int, mod_prec*,int,mod_prec* );
 //void ComputeNetwork_old(bool,bool ,cellState* , mod_prec*, int , int, mod_prec*,int,mod_prec* );
