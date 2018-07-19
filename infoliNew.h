@@ -27,27 +27,9 @@
 
 
 /*** FUNCTION PROTOTYPES ***/
-//void ComputeNetwork_new(bool,bool ,cellState* , mod_prec*, int , int, mod_prec*,int,mod_prec* );
-//void ComputeNetwork_old(bool,bool ,cellState* , mod_prec*, int , int, mod_prec*,int,mod_prec* );
-void ComputeOneCellTimeMux0_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux1_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux2_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux3_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux4_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux5_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux6_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux7_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
-void ComputeOneCellTimeMux8_newJH(int,  mod_prec*,mod_prec* , int, int, mod_prec*);
 
 //void ComputeOneCell( int,int, mod_prec, mod_prec* );
-void ComputeOneCell0_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
-void ComputeOneCell1_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
-void ComputeOneCell2_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
-void ComputeOneCell3_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
-void ComputeOneCell4_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
-void ComputeOneCell5_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
-void ComputeOneCell6_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
-void ComputeOneCell7_newJH( int,int, mod_prec ,mod_prec*, int, mod_prec*);
+void ComputeOneCell0_newJH(int, mod_prec ,mod_prec*, int, mod_prec*);
 
 
 Dend CompDend_newJH(struct Dend, mod_prec , mod_prec,mod_prec*, int , mod_prec*,int);

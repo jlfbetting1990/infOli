@@ -39,7 +39,7 @@ void ComputeNetwork_new(bool ini,bool new_matrix,cellState * IniArray, mod_prec 
 
 	
 	for(j=0; j<N_Size; ++j){
-		ComputeOneCell0_newJH(0,j,iAppin[j],neighVdend0,N_Size,cm_p);
+		ComputeOneCell0_newJH(j,iAppin[j],neighVdend0,N_Size,cm_p);
 		cm_p += N_Size;
 	}
 
@@ -50,7 +50,7 @@ void ComputeNetwork_new(bool ini,bool new_matrix,cellState * IniArray, mod_prec 
 }
 
 //Top Inferior Olive Cell compute function including the 3 computational compartments.
-void ComputeOneCell0_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix){
+void ComputeOneCell0_newJH(int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix){
 
 	cellState prevCellState;
 	prevCellState = local_state0_newJH[j];
