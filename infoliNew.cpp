@@ -51,9 +51,6 @@ void ComputeNetwork_new(bool ini,bool new_matrix,cellState IniArray[IO_NETWORK_S
 
 	for(j=0;j<IO_NETWORK_SIZE;++j){
 		local_state0_newJH[j]=new_state0_newJH[j];
-	}
-	//Create system output(all cell axon currents)
-	for(j=0;j<IO_NETWORK_SIZE;++j){
 		cellOut[j] = local_state0_newJH[j].axon.V_axon;
 	}
 }
