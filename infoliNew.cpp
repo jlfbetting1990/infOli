@@ -90,21 +90,17 @@ Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec 
     //H current calculation
      chPrms.prevComp1 = prevDend.Hcurrent_q;
      d_output.Hcurrent_q = DendHCurr_newJH(chPrms, prevDend.V_dend);
-	 //printf("Hcurrent_q: %.9f\n",d_output.Hcurrent_q);
      //Ca current calculation
      chPrms.prevComp1 = prevDend.Calcium_r;
      d_output.Calcium_r  = DendCaCurr_newJH(chPrms, prevDend.V_dend);
-	 //printf("Calcium_r: %.9f\n",d_output.Calcium_r);
      //K plus current calculation
      chPrms.prevComp1 = prevDend.Potassium_s;
      chPrms.prevComp2 = prevDend.Ca2Plus;
      d_output.Potassium_s = DendKCurr_newJH(chPrms );
-	 //printf("Potassium_s: %.9f\n",d_output.Potassium_s);
      //K plus current calculation
      chPrms.prevComp1 = prevDend.Ca2Plus;
      chPrms.prevComp2 =prevDend.I_CaH;
      d_output.Ca2Plus  = DendCal_newJH(chPrms);
-	 //printf("Ca2Plus: %.9f\n",d_output.Ca2Plus);
 
      //Neighbors Ic accumulation
      chComps.iC = IcNeighbors_newJH(neighVdend, prevDend.V_dend,N_Size,Connectivity_Matrix,j);
@@ -117,9 +113,7 @@ Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec 
      chComps.s = d_output.Potassium_s;
      newchComps = DendCurrVolt_newJH(chComps);
      d_output.I_CaH = newchComps.newI_CaH;
-	 //printf("I_CaH: %.9f\n",d_output.I_CaH);
      d_output.V_dend = newchComps.newVDend;
-	 //printf("V_dend: %.9f\n",d_output.V_dend);
 
     return d_output;
 }
@@ -189,9 +183,7 @@ mod_prec DendCal_newJH(struct channelParams chPrms){
 
     //Get inputs
     mod_prec prevCa2Plus = chPrms.prevComp1;
-	//printf("prevCa2Plus: %.9f\n",prevCa2Plus);
     mod_prec prevI_CaH = chPrms.prevComp2;
-	//printf("prevI_CaH: %.9f\n",prevI_CaH);
 
     // update Calcium concentration
     dCa_dt = -3 * prevI_CaH - 0.075 * prevCa2Plus;
@@ -209,19 +201,12 @@ dendCurrVoltPrms DendCurrVolt_newJH(struct dendCurrVoltPrms chComps){
 
     //Get inputs
     mod_prec I_c = chComps.iC;
-//	printf("I_c: %.9f\n",I_c);
     mod_prec I_app = chComps.iApp;
-//	printf("I_app: %.9f\n",I_app);
     mod_prec prevV_dend = chComps.vDend;
-//	printf("prevV_dend: %.9f\n",prevV_dend);
     mod_prec prevV_soma = chComps.vSoma;
-//	printf("prevV_soma: %.9f\n",prevV_soma);
     mod_prec q = chComps.q;
-//	printf("q: %.9f\n",q);
     mod_prec r = chComps.r;
-//	printf("r: %.9f\n",r);
     mod_prec s = chComps.s;
-//	printf("s: %.9f\n",s);
     // DENDRITIC CURRENTS
 
     // Soma-dendrite interaction current I_sd
@@ -246,7 +231,6 @@ mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend,
 
     int i,Bit_Indicator,pos, Integer_Indicator, Array_Fragment;
     mod_prec f, V, I_c, V_acc, F_acc;
-    //printf("Ic[0]= %f\n", neighVdend[0]);
 
     //opt division by constant
     mod_prec const hundred = -1/100.0;
@@ -254,20 +238,14 @@ mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend,
     I_c = 0;
     Array_Fragment = MAX_N_SIZE*j;
 
-	//printf("Slice of connectivity matrix:\n");
 IcNeighbors_newJH_label0:	for(i=0;i<N_Size;i++){
-				//		printf("%.2f ",Connectivity_Matrix[i]);
 						V = prevV_dend - neighVdend[i];
-						//printf("V%d: %.9f\n",i,V);
-						//printf("%f - %f\n",prevV_dend, neighVdend[i]);
 						//f = 0.8 * exp(-1*pow(V,2)/100) + 0.2;    // SCHWEIGHOFER 2004 VERSION
         				//I_c = I_c + (Connectivity_Matrix[i] * f * V);
         				f= V*expf(V*V*hundred);
         				F_acc += f*Connectivity_Matrix[i] ;
         				V_acc += V*Connectivity_Matrix[i] ;
-			//		printf("USING: %.2f\n",Connectivity_Matrix[i]);
 					}
-	//				printf("\n");
 
 	I_c = (0.8 * F_acc + 0.2 * V_acc);
 
@@ -294,8 +272,6 @@ Soma CompSoma_newJH(Soma prevSoma , mod_prec prevDend, mod_prec prevAxon){
 
     s_output.Calcium_k = chPrmsNew.newComp1;
     s_output.Calcium_l = chPrmsNew.newComp2;
-//	printf("Calcium_k: %.9f\n",s_output.Calcium_k);
-//	printf("Calcium_l: %.9f\n",s_output.Calcium_l);
 
     chPrms.v = prevSoma.V_soma;
     chPrms.prevComp1 = prevSoma.Sodium_m;
@@ -306,8 +282,6 @@ Soma CompSoma_newJH(Soma prevSoma , mod_prec prevDend, mod_prec prevAxon){
 
     s_output.Sodium_m = chPrmsNew.newComp1;
     s_output.Sodium_h = chPrmsNew.newComp2;
-//	printf("Sodium_m: %.9f\n",s_output.Sodium_m);
-//	printf("Sodium_h: %.9f\n",s_output.Sodium_h);
 
 
     chPrms.v = prevSoma.V_soma;
@@ -320,8 +294,6 @@ Soma CompSoma_newJH(Soma prevSoma , mod_prec prevDend, mod_prec prevAxon){
     s_output.Potassium_n = chPrmsNew.newComp1;
     s_output.Potassium_p = chPrmsNew.newComp2;
 
-//	printf("Potassium_n: %.9f\n",s_output.Potassium_n);
-//	printf("Potassium_p: %.9f\n",s_output.Potassium_p);
 
     chPrms.v = prevSoma.V_soma;
     chPrms.prevComp1 = prevSoma.Potassium_x_s;
@@ -330,7 +302,6 @@ Soma CompSoma_newJH(Soma prevSoma , mod_prec prevDend, mod_prec prevAxon){
     chPrmsNew.newComp1 = SomaPotassiumX_newJH(chPrms);
 
     s_output.Potassium_x_s = chPrmsNew.newComp1;
-//	printf("Potassium_x_s: %.9f\n",s_output.Potassium_x_s);
     //Compartment output calculation
     chComps.g_CaL = prevSoma.g_CaL;
     s_output.g_CaL = prevSoma.g_CaL;
@@ -347,7 +318,6 @@ Soma CompSoma_newJH(Soma prevSoma , mod_prec prevDend, mod_prec prevAxon){
 
     s_output.g_CaL = prevSoma.g_CaL;
     s_output.V_soma = chComps.newVSoma;
-	//printf("V_soma: %.9f\n",s_output.V_soma);
     return s_output;
 }
 channelParams SomaCalcium_newJH(struct channelParams chPrms){
@@ -499,8 +469,6 @@ Axon CompAxon_newJH(Axon prevAxon, mod_prec prevSoma){
 
     a_output.Sodium_h_a =  chPrmsNew.newComp1;
     a_output.Sodium_m_a =  chPrmsNew.newComp2;
-	//printf("Sodium_h_a: %.9f\n",a_output.Sodium_h_a);
-	//printf("Sodium_m_a: %.9f\n",a_output.Sodium_m_a);
 
     chPrms.v = prevAxon.V_axon;
     chPrms.prevComp1 = prevAxon.Potassium_x_a;
@@ -509,7 +477,6 @@ Axon CompAxon_newJH(Axon prevAxon, mod_prec prevSoma){
     chPrmsNew.newComp1 = AxonPotassium_newJH(chPrms);
 
     a_output.Potassium_x_a =  chPrmsNew.newComp1;
-	//printf("Potassium_x_a: %.9f\n",a_output.Potassium_x_a);
 
     chComps.vSoma = prevSoma;
     chComps.vAxon = prevAxon.V_axon;
@@ -521,7 +488,6 @@ Axon CompAxon_newJH(Axon prevAxon, mod_prec prevSoma){
 
 
     a_output.V_axon =  chComps.newVAxon;
-	//printf("V_axon: %.9f\n",a_output.V_axon);
 
 
     return a_output;
