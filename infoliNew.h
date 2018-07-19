@@ -32,13 +32,13 @@
 void ComputeOneCell0_newJH(int, mod_prec ,mod_prec*, int, mod_prec*);
 
 
-Dend CompDend_newJH(struct Dend, mod_prec , mod_prec,mod_prec*, int , mod_prec*,int);
+Dend CompDend_newJH(struct Dend, mod_prec , mod_prec,mod_prec*, int , mod_prec*);
 mod_prec DendHCurr_newJH(struct channelParams, mod_prec );
 mod_prec DendCaCurr_newJH(struct channelParams, mod_prec );
 mod_prec DendKCurr_newJH(struct channelParams );
 mod_prec DendCal_newJH(struct channelParams );
 dendCurrVoltPrms DendCurrVolt_newJH(struct dendCurrVoltPrms );
-mod_prec IcNeighbors_newJH(mod_prec*, mod_prec, int, mod_prec*,int);
+mod_prec IcNeighbors_newJH(mod_prec*, mod_prec, int, mod_prec*);
 
 Soma CompSoma_newJH(struct Soma, mod_prec ,mod_prec );
 channelParams SomaCalcium_newJH(struct channelParams );

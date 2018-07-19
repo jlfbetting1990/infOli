@@ -36,7 +36,6 @@ void ComputeNetwork_new(bool ini,bool new_matrix,cellState * IniArray, mod_prec 
 	for(j=0;j<N_Size;++j){
 		neighVdend0[j] = local_state0_newJH[j].dend.V_dend;
 	}
-
 	
 	for(j=0; j<N_Size; ++j){
 		ComputeOneCell0_newJH(j,iAppin[j],neighVdend0,N_Size,cm_p);
@@ -56,13 +55,13 @@ void ComputeOneCell0_newJH(int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE
 	prevCellState = local_state0_newJH[j];
 
     //The three compartments can be computed concurrently but only across a single sim step
-	new_state0_newJH[j].dend = CompDend_newJH(prevCellState.dend, prevCellState.soma.V_soma , iAppin, neighVdend,N_Size,Connectivity_Matrix,j);
+	new_state0_newJH[j].dend = CompDend_newJH(prevCellState.dend, prevCellState.soma.V_soma , iAppin, neighVdend,N_Size,Connectivity_Matrix);
 	new_state0_newJH[j].soma = CompSoma_newJH(prevCellState.soma,prevCellState.dend.V_dend, prevCellState.axon.V_axon);
 	new_state0_newJH[j].axon = CompAxon_newJH(prevCellState.axon ,prevCellState.soma.V_soma);
 }
 
 
-Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix,int j){
+Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix){
 
 	struct Dend d_output;
     struct channelParams chPrms;
@@ -86,7 +85,7 @@ Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec 
      d_output.Ca2Plus  = DendCal_newJH(chPrms);
 
      //Neighbors Ic accumulation
-     chComps.iC = IcNeighbors_newJH(neighVdend, prevDend.V_dend,N_Size,Connectivity_Matrix,j);
+     chComps.iC = IcNeighbors_newJH(neighVdend, prevDend.V_dend,N_Size,Connectivity_Matrix);
      //Compartment output calculation
      chComps.iApp = iAppIn;
      chComps.vDend = prevDend.V_dend;
@@ -210,7 +209,7 @@ dendCurrVoltPrms DendCurrVolt_newJH(struct dendCurrVoltPrms chComps){
     chComps.newI_CaH = I_CaH;//This is a state value read in DendCal_newJH
     return chComps;
 }
-mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend, int N_Size ,mod_prec * Connectivity_Matrix,int j){
+mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend, int N_Size ,mod_prec * Connectivity_Matrix){
 
     int i,Bit_Indicator,pos, Integer_Indicator, Array_Fragment;
     mod_prec f, V, I_c, V_acc, F_acc;
@@ -219,7 +218,6 @@ mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend,
     mod_prec const hundred = -1/100.0;
 
     I_c = 0;
-    Array_Fragment = MAX_N_SIZE*j;
 
 IcNeighbors_newJH_label0:	for(i=0;i<N_Size;i++){
 						V = prevV_dend - neighVdend[i];
