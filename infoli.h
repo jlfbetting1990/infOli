@@ -7,7 +7,7 @@
 /*** MACROS ***/
 //Network Parameters///////////////////////////////////////////////////////////////////////////////////////////
 #define RAND_INIT 0 // make it zero to facilitate debugging
-#define SIMTIME 50 // in ms, for when no input file is provided
+#define SIMTIME 1 // in ms, for when no input file is provided
 //IO network size is IO_NETWORK_DIM1*IO_NETWORK_DIM2 times the TIME_MUX_FACTOR
 #define IO_NETWORK_SIZE HW_CELLS*TIME_MUX_FACTOR
 //Change the Time Mux Factor to change the number of simulated cells in the network

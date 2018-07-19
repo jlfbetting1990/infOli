@@ -44,35 +44,35 @@ int main(int argc, char *argv[]){
     printf("Inferior Olive Model (%d cell network)\n", IO_NETWORK_SIZE);
 
     //Process command line arguments
-	switch(argc) {
-		case 1 :
-        	inputFromFile = 0;
-        	printf("Warning: No input file has been specified. A one-pulse input will be used.\n");
-			break;
- 		case 3 : 
+	//switch(argc) {
+	//	case 1 :
+     //   	inputFromFile = 0;
+     //   	printf("Warning: No input file has been specified. A one-pulse input will be used.\n");
+	//		break;
+ 	//	case 3 :
 			connectivityMatrixInput = true;
-			conFileName = argv[2];
+			conFileName = "test10.txt";
 	    	conInFile = fopen(conFileName,"r");
 			if (conInFile==NULL) {
-				printf("Error: Could not open %s\n", conFileName);
+				printf("Error opening connectivity matrix file: Could not open %s\n", conFileName);
 				exit(EXIT_FAILURE);
 			}
 			printf("Using file %s as connectivity matrix\n", conFileName);
 			// no break
-		case 2 :
+		//case 2 :
         	inputFromFile = 1;
-        	inFileName = argv[1];//comment out for a hardcoded name
+        	inFileName = "inputFile.txt";//comment out for a hardcoded name
         	pInFile = fopen(inFileName,"r");
         	if(pInFile==NULL){
-            	printf("Error: Couldn't open %s\n", inFileName);
+            	printf("Error opening input file: Could not open %s\n", inFileName);
             	exit(EXIT_FAILURE);
         	}
 			printf("Using file %s as input file\n", inFileName);
-			break;
-		default :
-        	printf("Error: Too many arguments.\nUsage: /InferiorOlive.x <Iapp_input_file> <Connection_matrix_file>, ./InferiorOlive.x <Iapp_input_file>, or ./InferiorOlive.x\n");
-        	exit(EXIT_FAILURE);
-    }
+	//		break;
+	//	default :
+    //   	printf("Error: Too many arguments.\nUsage: /InferiorOlive.x <Iapp_input_file> <Connection_matrix_file>, ./InferiorOlive.x <Iapp_input_file>, or ./InferiorOlive.x\n");
+    //    	exit(EXIT_FAILURE);
+    //}
 
     //Open output file
     pOutFile = fopen(outFileName,"w");
@@ -154,6 +154,7 @@ int main(int argc, char *argv[]){
 					++cumulCounter;
             }
             simSteps++;
+            break;
         }
     }else{
 	printf("No input file. Using one-pulse input...\n");
