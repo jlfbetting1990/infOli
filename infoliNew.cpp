@@ -215,7 +215,6 @@ mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend,
     mod_prec f, V, I_c, V_acc, F_acc;
 
     //opt division by constant
-    mod_prec const hundred = -1/100.0;
 
     I_c = 0;
 
@@ -223,7 +222,7 @@ IcNeighbors_newJH_label0:	for(i=0;i<N_Size;i++){
 						V = prevV_dend - neighVdend[i];
 						//f = 0.8 * exp(-1*pow(V,2)/100) + 0.2;    // SCHWEIGHOFER 2004 VERSION
         				//I_c = I_c + (Connectivity_Matrix[i] * f * V);
-        				f= V*expf(V*V*hundred);
+        				f= V*expf(V*V*HUNDRED);
         				F_acc += f*Connectivity_Matrix[i] ;
         				V_acc += V*Connectivity_Matrix[i] ;
 					}
