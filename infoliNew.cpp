@@ -8,66 +8,58 @@
 #include "infoli.h"
 #include "infoliNew.h"
 
-//cellState local_state[IO_NETWORK_DIM1*IO_NETWORK_DIM2][TIME_MUX_FACTOR];
-cellState local_state0_newJH[IO_NETWORK_SIZE];
-
-
-cellState new_state0_newJH[IO_NETWORK_SIZE];
-
-mod_prec IAppin0_newJH[MAX_TIME_MUX];
-
+cellState local_state0_newJH[MAX_N_SIZE];
+cellState new_state0_newJH[MAX_N_SIZE];
+mod_prec IAppin0_newJH[MAX_N_SIZE];
 mod_prec Connectivity_Matrix0_newJH[CONN_MATRIX_MAX];
 
 
-void ComputeNetwork_new(bool ini,bool new_matrix,cellState IniArray[IO_NETWORK_SIZE], mod_prec iAppin[IO_NETWORK_SIZE] , int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_SIZE], int Conn_Matrix_Size, mod_prec cellOut[IO_NETWORK_SIZE]){
-
+void ComputeNetwork_new(bool ini,bool new_matrix,cellState * IniArray, mod_prec * iAppin, int N_Size, int Mux_Factor,mod_prec *  Connectivity_Matrix, int Conn_Matrix_Size, mod_prec * cellOut){
 	int j;
 	//returnState AxonOut;
 	mod_prec neighVdend0[MAX_N_SIZE];
 
 	//Initialize cell clusters
 	if(ini) {
-		for(j=0;j<IO_NETWORK_SIZE;++j) {
+		for(j=0;j<N_Size;++j) {
 			local_state0_newJH[j] = IniArray[j];
 		}
 	}
 
 	if(new_matrix){
-		int max_set = (IO_NETWORK_SIZE*IO_NETWORK_SIZE)/HW_CELLS; 
-		int its = max_set*IO_NETWORK_SIZE;
-		for (j=0;j<IO_NETWORK_SIZE*IO_NETWORK_SIZE;++j){
-			Connectivity_Matrix0_newJH[j] = Connectivity_Matrix[((j*IO_NETWORK_SIZE) % (IO_NETWORK_SIZE*IO_NETWORK_SIZE-1))];
+		for (j=0;j<N_Size*N_Size;++j){
+			Connectivity_Matrix0_newJH[j] = Connectivity_Matrix[((j*N_Size) % (N_Size*N_Size-1))];
 		}
 	}
 	//Save invoked inputs on Block RAM and pick up the neighboring inputs for each cluster.
 
-	for(j=0;j<IO_NETWORK_SIZE;++j){
+	for(j=0;j<N_Size;++j){
 		neighVdend0[j] = local_state0_newJH[j].dend.V_dend;
 		IAppin0_newJH[j] = iAppin[j];
 	}
 
 	ComputeOneCellTimeMux0_newJH(0,IAppin0_newJH,neighVdend0,N_Size,Mux_Factor,Connectivity_Matrix0_newJH);
 
-	for(j=0;j<IO_NETWORK_SIZE;++j){
+	for(j=0;j<N_Size;++j){
 		local_state0_newJH[j]=new_state0_newJH[j];
 		cellOut[j] = local_state0_newJH[j].axon.V_axon;
 	}
 }
 
-void ComputeOneCellTimeMux0_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE]){
+void ComputeOneCellTimeMux0_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor, mod_prec * Connectivity_Matrix){
 	int j,i;
 	
 	mod_prec * cm_p = Connectivity_Matrix;
 
 	// call cell execution
-	for(j=0; j<IO_NETWORK_SIZE; ++j){
+	for(j=0; j<N_Size; ++j){
 		ComputeOneCell0_newJH(cluster,j,iAppin[j],neighVdend,N_Size,cm_p);
-		cm_p += IO_NETWORK_SIZE;
+		cm_p += N_Size;
 	}
 }
 
 //Top Inferior Olive Cell compute function including the 3 computational compartments.
-void ComputeOneCell0_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE]){
+void ComputeOneCell0_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix){
 
 	cellState prevCellState;
 	prevCellState = local_state0_newJH[j];
@@ -79,7 +71,7 @@ void ComputeOneCell0_newJH(int i,int j,mod_prec iAppin, mod_prec neighVdend[MAX_
 }
 
 
-Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE],int j){
+Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix,int j){
 
 	struct Dend d_output;
     struct channelParams chPrms;
@@ -227,7 +219,7 @@ dendCurrVoltPrms DendCurrVolt_newJH(struct dendCurrVoltPrms chComps){
     chComps.newI_CaH = I_CaH;//This is a state value read in DendCal_newJH
     return chComps;
 }
-mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend, int N_Size ,mod_prec Connectivity_Matrix[IO_NETWORK_SIZE],int j){
+mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend, int N_Size ,mod_prec * Connectivity_Matrix,int j){
 
     int i,Bit_Indicator,pos, Integer_Indicator, Array_Fragment;
     mod_prec f, V, I_c, V_acc, F_acc;
