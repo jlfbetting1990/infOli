@@ -31,30 +31,21 @@ void ComputeNetwork_new(bool ini,bool new_matrix,cellState * IniArray, mod_prec 
 			Connectivity_Matrix0_newJH[j] = Connectivity_Matrix[((j*N_Size) % (N_Size*N_Size-1))];
 		}
 	}
-	//Save invoked inputs on Block RAM and pick up the neighboring inputs for each cluster.
+	mod_prec * cm_p = Connectivity_Matrix0_newJH;
 
 	for(j=0;j<N_Size;++j){
 		neighVdend0[j] = local_state0_newJH[j].dend.V_dend;
-		IAppin0_newJH[j] = iAppin[j];
 	}
 
-	ComputeOneCellTimeMux0_newJH(0,IAppin0_newJH,neighVdend0,N_Size,Mux_Factor,Connectivity_Matrix0_newJH);
+	
+	for(j=0; j<N_Size; ++j){
+		ComputeOneCell0_newJH(0,j,iAppin[j],neighVdend0,N_Size,cm_p);
+		cm_p += N_Size;
+	}
 
 	for(j=0;j<N_Size;++j){
 		local_state0_newJH[j]=new_state0_newJH[j];
 		cellOut[j] = local_state0_newJH[j].axon.V_axon;
-	}
-}
-
-void ComputeOneCellTimeMux0_newJH(int cluster,  mod_prec iAppin[MAX_TIME_MUX], mod_prec neighVdend[MAX_N_SIZE], int N_Size, int Mux_Factor, mod_prec * Connectivity_Matrix){
-	int j,i;
-	
-	mod_prec * cm_p = Connectivity_Matrix;
-
-	// call cell execution
-	for(j=0; j<N_Size; ++j){
-		ComputeOneCell0_newJH(cluster,j,iAppin[j],neighVdend,N_Size,cm_p);
-		cm_p += N_Size;
 	}
 }
 
@@ -110,7 +101,7 @@ Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec 
     return d_output;
 }
 
-mod_prec DendHCurr_newJH(struct channelParams chPrms , mod_prec prevV_dend){
+mod_prec DendHCurr_newJH(struct channelParams chPrms, mod_prec prevV_dend){
 
     mod_prec q_inf, tau_q, dq_dt, q_local;
 
