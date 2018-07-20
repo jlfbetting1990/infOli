@@ -49,7 +49,7 @@ void ComputeNetwork_new(bool ini,bool new_matrix,cellState IniArray[MAX_N_SIZE],
 }
 
 //Top Inferior Olive Cell compute function including the 3 computational compartments.
-void ComputeOneCell0_newJH(int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix){
+void ComputeOneCell0_newJH(int j,mod_prec iAppin, mod_prec * neighVdend, int N_Size,mod_prec * Connectivity_Matrix){
 
 	cellState prevCellState;
 	prevCellState = local_state0_newJH[j];
@@ -61,7 +61,7 @@ void ComputeOneCell0_newJH(int j,mod_prec iAppin, mod_prec neighVdend[MAX_N_SIZE
 }
 
 
-Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec neighVdend[MAX_N_SIZE], int N_Size,mod_prec * Connectivity_Matrix){
+Dend CompDend_newJH(Dend prevDend, mod_prec prevSoma , mod_prec iAppIn,mod_prec * neighVdend, int N_Size,mod_prec * Connectivity_Matrix){
 
 	struct Dend d_output;
     struct channelParams chPrms;
@@ -209,7 +209,7 @@ dendCurrVoltPrms DendCurrVolt_newJH(struct dendCurrVoltPrms chComps){
     chComps.newI_CaH = I_CaH;//This is a state value read in DendCal_newJH
     return chComps;
 }
-mod_prec IcNeighbors_newJH(mod_prec neighVdend[MAX_N_SIZE], mod_prec prevV_dend, int N_Size ,mod_prec * Connectivity_Matrix){
+mod_prec IcNeighbors_newJH(mod_prec * neighVdend, mod_prec prevV_dend, int N_Size ,mod_prec * Connectivity_Matrix){
 
     int i,Bit_Indicator,pos, Integer_Indicator, Array_Fragment;
     mod_prec f, V, I_c, V_acc, F_acc;

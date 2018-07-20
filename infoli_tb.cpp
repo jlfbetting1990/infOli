@@ -154,7 +154,9 @@ int main(int argc, char *argv[]){
 					++cumulCounter;
             }
             simSteps++;
-            break;
+            printf("Finished simulation step %d\n",simSteps);
+            if (argc == 1) // so that the cosimulation only does one cycle
+            	break;
         }
     }else{
 	printf("No input file. Using one-pulse input...\n");
