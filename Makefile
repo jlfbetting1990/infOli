@@ -7,8 +7,8 @@ OBJECTS = infoli_tb.o infoliNew.o infoliOld.o
 DEPENDS = infoli.h infoliNew.h
 INCLUDES = -I"${CAT_HOME}/shared/include"
 DEFINES = 
-CXX = /usr/bin/g++
-CXXFLAGS = -g -o3 ${DEFINES} ${INCLUDES}
+CXX = /usr/bin/g++-5
+CXXFLAGS = -g -O3 ${DEFINES} ${INCLUDES}
 
 #my_tb target is dependent on main.o and hello.o
 

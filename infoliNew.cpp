@@ -15,34 +15,34 @@ mod_prec Connectivity_Matrix0_newJH[CONN_MATRIX_MAX];
 
 
 void ComputeNetwork_new(bool ini,bool new_matrix,cellState IniArray[MAX_N_SIZE], mod_prec iAppin[MAX_N_SIZE], int N_Size, int Mux_Factor,mod_prec Connectivity_Matrix[CONN_MATRIX_MAX], int Conn_Matrix_Size, mod_prec cellOut[MAX_N_SIZE]){
-	int j;
+	int j, k;
+	k = 0;
 	//returnState AxonOut;
 	mod_prec neighVdend0[MAX_N_SIZE];
 
+	int N_Size_Sq = N_Size*N_Size;
 	//Initialize cell clusters
 	if(ini) {
 		for(j=0;j<N_Size;++j) {
+#pragma HLS PIPELINE II=1
 			local_state0_newJH[j] = IniArray[j];
+			neighVdend0[j] = local_state0_newJH[j].dend.V_dend;
 		}
 	}
-
 	if(new_matrix){
-		for (j=0;j<N_Size*N_Size;++j){
-			Connectivity_Matrix0_newJH[j] = Connectivity_Matrix[((j*N_Size) % (N_Size*N_Size-1))];
+		for (j=0;j<N_Size_Sq;++j){
+#pragma HLS PIPELINE II=1
+		Connectivity_Matrix0_newJH[j] = Connectivity_Matrix[k];
+		k += N_Size;
+		if (k >= (N_Size_Sq-1))
+			k -= (N_Size_Sq-1);
 		}
 	}
 	mod_prec * cm_p = Connectivity_Matrix0_newJH;
-
-	for(j=0;j<N_Size;++j){
-		neighVdend0[j] = local_state0_newJH[j].dend.V_dend;
-	}
 	
 	for(j=0; j<N_Size; ++j){
 		ComputeOneCell0_newJH(j,iAppin[j],neighVdend0,N_Size,cm_p);
 		cm_p += N_Size;
-	}
-
-	for(j=0;j<N_Size;++j){
 		local_state0_newJH[j]=new_state0_newJH[j];
 		cellOut[j] = local_state0_newJH[j].axon.V_axon;
 	}
