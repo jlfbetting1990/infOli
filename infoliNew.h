@@ -13,17 +13,17 @@
 
 #define DIV_FOUR 0.25f
 #define DIV_FIVE 0.2f
-#define DIV_THIRTEEN 1/13.9f
-#define FOUR 1/4.2f
-#define EIGHT 1/8.5f
-#define THIRTY 1/30.00f
-#define SEVEN 1/7.3f
-#define FIVE_FIVE 1/5.5f
-#define FIVE_EIGHT -1/5.8f
-#define THIRTY_THREE 1/33.0f
+#define DIV_THIRTEEN 0.07194244604f	//		1/13.9f
+#define FOUR 0.23809523809f			//		1/4.2f
+#define EIGHT 0.11764705882f		//		1/8.5f
+#define THIRTY 0.03333333333f		//		1/30.00f
+#define SEVEN 0.13698630137f		//		1/7.3f
+#define FIVE_FIVE 0.18181818181f	//		1/5.5f
+#define FIVE_EIGHT -0.1724137931	//		-1/5.8f
+#define THIRTY_THREE 0.0303030303	//		1/33.0f
 #define TEN 0.1f
-#define TWELVE -1/12.0f
-#define NINE_HUNDRED 1/900.0f
+#define TWELVE -0.08333333333		//		-1/12.0f
+#define NINE_HUNDRED 0.00111111111  //		1/900.0f
 #define HUNDRED -0.01f
 
 /*** FUNCTION PROTOTYPES ***/
