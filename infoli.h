@@ -17,8 +17,8 @@
 #define CONN_MATRIX_SIZE IO_NETWORK_SIZE*IO_NETWORK_SIZE
 
 //Maximum Number of cells and time-multiplexing
-#define MAX_N_SIZE 864
-#define MAX_TIME_MUX 108
+#define MAX_N_SIZE 10
+#define MAX_TIME_MUX 2
 #define CONN_MATRIX_MAX MAX_N_SIZE*MAX_N_SIZE
 #define CONN_MATRIX_HW  CONN_MATRIX_MAX/8
 #define IAPP_MAX_CHARS 8 //2 integer, the dot, 3 decimals and the delimiter
