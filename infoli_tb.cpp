@@ -42,16 +42,19 @@ int main(int argc, char *argv[]){
 
 
     printf("Inferior Olive Model (%d cell network)\n", IO_NETWORK_SIZE);
-
+    inputFromFile = 1;
     //Process command line arguments
 	switch(argc) {
 		case 1 :
-        	inputFromFile = 0;
-        	printf("Warning: No input file has been specified. A one-pulse input will be used.\n");
-			break;
+        	printf("Warning: No input file has been specified. Using standard input files.\n");
+	//		no break;
  		case 3 : 
 			connectivityMatrixInput = true;
-			conFileName = argv[2];
+			if (argc == 1) {
+				conFileName = "test10.txt";
+			} else {
+				conFileName = argv[2];
+			}
 	    	conInFile = fopen(conFileName,"r");
 			if (conInFile==NULL) {
 				printf("Error: Could not open %s\n", conFileName);
@@ -60,8 +63,11 @@ int main(int argc, char *argv[]){
 			printf("Using file %s as connectivity matrix\n", conFileName);
 			// no break
 		case 2 :
-        	inputFromFile = 1;
-        	inFileName = argv[1];//comment out for a hardcoded name
+			if (argc == 1) {
+				inFileName = "inputFile.txt";
+			} else {
+				inFileName = argv[1];//comment out for a hardcoded name
+			}
         	pInFile = fopen(inFileName,"r");
         	if(pInFile==NULL){
             	printf("Error: Couldn't open %s\n", inFileName);
@@ -154,6 +160,8 @@ int main(int argc, char *argv[]){
 					++cumulCounter;
             }
             simSteps++;
+            if (argc == 1)
+            	break;
         }
     }else{
 	printf("No input file. Using one-pulse input...\n");
@@ -207,6 +215,7 @@ int main(int argc, char *argv[]){
     free(iAppBuf);
     fclose (pOutFile);
     if(inputFromFile){ fclose (pInFile);}
+    printf("\n%s\n", temp);
 	printf("Average difference between results: %.16f%%\n",cumulDiff/((float)cumulCounter));
     return 0;
 }
