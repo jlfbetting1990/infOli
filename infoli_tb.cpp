@@ -26,8 +26,8 @@ int main(int argc, char *argv[]){
 	bool connectivityMatrixInput = false;
     int initSteps;
     returnState cellOut_1, cellOut_2;
-	float result_1, result_2, percDifference;
-	float cumulDiff = 0;
+	double result_1, result_2, percDifference;
+	double cumulDiff = 0;
 	int cumulCounter = 0;
     cellState IniArray[IO_NETWORK_SIZE];
     cellCompParams cellCompParamsPtr;
